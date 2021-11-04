@@ -11,16 +11,15 @@ services:
 #   Access vio iSQL://localhost:1111
 
   virtuoso:
-    image: tenforce/virtuoso:latest
+    build: ./virtuoso
     environment:
-      DBA_PASSWORD: ${DBA_PASSWORD}
-      SPARQL_UPDATE: 'true'
-      DEFAULT_GRAPH: 'http://www.snik.eu/ontology'
-      VIRT_Parameters_DirsAllowed: ., /usr/local/virtuoso-opensource/share/virtuoso/vad, /virtuoso/data
-
+      - DBA_PASSWORD=${DBA_PASSWORD}
+      - SPARQL_UPDATE='false'
+      #- DEFAULT_GRAPH=http://hitontology.snik.eu/ontology
+      #- VIRT_Parameters_DirsAllowed=., /usr/local/virtuoso-opensource/share/virtuoso/vad, /virtuoso/data
     volumes:
-      - /usr/local/virtuoso-opensource/lib
       - virtuoso-data:/data
+    #  - /usr/local/virtuoso-opensource/lib
     ports:
       - "127.0.0.1:8102:8890"
       - "127.0.0.1:8103:1111"
@@ -56,9 +55,10 @@ services:
     #    condition: service_healthy
     environment:
       - HITO_SPARQL_ENDPOINT=http://virtuoso:8890/sparql
+      - SQL_OUTPUT_BASE_DIR=/tmp/sql/
     #  - DBPEDIA_SPARQL_ENDPOINT= 
     volumes:
-      - sql:/sql
+      - sql:/tmp/sql/
     command: ["./wait-for","virtuoso:8890","--","python","download.py"]
 
   postgresql:
@@ -74,7 +74,8 @@ services:
       - sql:/docker-entrypoint-initdb.d
       #- /path/to/postgresql-persistence:/bitnami/postgresql
     depends_on:
-      - sparqltosql
+      sparqltosql:
+        condition: service_completed_successfully
 
   phppgadmin:
     #restart: unless-stopped

@@ -1,4 +1,10 @@
 #/bin/sh
+
+if [ ! -f ./virtuoso.ini ];
+then
+  mv /virtuoso.ini . 2>/dev/null
+fi
+
 if [ ! -f ".setup" ] ;
 then
     echo "Start setup"

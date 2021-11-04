@@ -10,9 +10,12 @@ ENV DEFAULT_GRAPH=http://hitontology.eu/ontology
 # Does not work because of ADD and caching
 #RUN ["sed","-i","s|^Load|;Load|","/usr/local/virtuoso-opensource/var/lib/virtuoso/db/virtuoso.ini"]
 ENV DBA_PASSWORD=dba
-#WORKDIR /virtuoso
+#WORKDIR /usr/local/virtuoso-opensource/var/lib/virtuoso/db
+WORKDIR /virtuoso
 COPY setup.sql .
 COPY wrapper.sh .
 # Virtuoso will automatically load any data in that directory on the first startup
 # See https://hub.docker.com/r/tenforce/virtuoso
-CMD ["/bin/sh","./wrapper.sh"]
+#CMD ["/usr/local/virtuoso-opensource/var/lib/virtuoso/db/wrapper.sh"]
+#ENTRYPOINT ["/usr/local/virtuoso-opensource/var/lib/virtuoso/db/wrapper.sh"]
+ENTRYPOINT ["/bin/sh","./wrapper.sh"]
