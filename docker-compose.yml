@@ -134,6 +134,7 @@ services:
       - HITO_DATABASE_PORT=5432
       - HITO_DATABASE_PASSWORD=${POSTGRESQL_PASSWORD}
       - HITO_DATABASE_NAME=postgres
+      - HITO_DATABASE_FRONTEND_REVERSE_PROXY_PATH=/database-frontend
       #- HITO_DATABASE_FRONTEND_SERVER_NAME=bruchtal.imise.uni-leipzig.de/database-frontend
 
 #networks:
