@@ -68,7 +68,9 @@ services:
     #  - DBPEDIA_SPARQL_ENDPOINT= 
     volumes:
       - sql:/tmp/sql/
-    command: ["./wait-for","virtuoso:8890","--","python","download.py"]
+    # give Virtuoso time to load the RDF files
+    command: ./wait-for virtuoso:8890 -- sleep 3 && python download.py
+    #command: ["./wait-for","virtuoso:8890","--","python", "download.py"]
 
   postgresql:
     # upgrade to postgresql 14 when available for Arch Linux for local testing
