@@ -69,8 +69,9 @@ services:
     volumes:
       - sql:/tmp/sql/
     # give Virtuoso time to load the RDF files
-    command: ./wait-for virtuoso:8890 -- sleep 3 && python download.py
-    #command: ["./wait-for","virtuoso:8890","--","python", "download.py"]
+    # leads to an error on the server preventing postgresql from starting
+    #command: ./wait-for virtuoso:8890 -- sleep 3 && python download.py
+    command: ["./wait-for","virtuoso:8890","--","python", "download.py"]
 
   postgresql:
     # upgrade to postgresql 14 when available for Arch Linux for local testing
