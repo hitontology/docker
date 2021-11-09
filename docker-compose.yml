@@ -27,15 +27,24 @@ services:
     #healthcheck:
     #  test: ["CMD", "curl", "-f", "http://localhost:8890"]
 
-# LodView
-#   Access via http://<hostname>:8889
-#  lodview:
-#    build: ./lodview
-#    ports:
-#      - "127.0.0.1:8104:8080"
-#    links:
-#      - virtuoso
-#    restart: unless-stopped
+  lodview:
+    build: ./lodview
+    #environment:
+      #- LODVIEW_URISPACE=http://hitontology.eu/ontology/
+      #- LODVIEW_PREFIX=hito
+      #LODVIEW_SPARQLENDPOINT: "http://virtuoso:8890/sparql"
+      # for isolated local testing
+      #- LODVIEW_SPARQLENDPOINT=https://hitontology.eu/sparql
+      #- LODVIEW_HOMEURL=http://hitontology.eu/ontology/SoftwareProduct
+      #- LODVIEW_HOME_TITLE=HITO
+      #- LODVIEW_HOME_ABSTRACT=This is the Abstract 
+      #- LODVIEW_HOME_DESCRIPTION=RDF Browser for HITO
+      #- LODVIEW_PUBLICURLPREFIX=auto
+    ports:
+      - "127.0.0.1:8104:8080"
+    depends_on: 
+      - virtuoso
+    restart: unless-stopped
 
 ## TripleCheckMate
 ##   Access via http://<hostname>:8888
