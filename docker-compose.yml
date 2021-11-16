@@ -58,20 +58,16 @@ services:
 
   sparqltosql:
     build: ../database
-    depends_on:
-      - virtuoso
-    #  virtuoso:
-    #    condition: service_healthy
     environment:
       - HITO_SPARQL_ENDPOINT=http://virtuoso:8890/sparql
       - SQL_OUTPUT_BASE_DIR=/tmp/sql/
     #  - DBPEDIA_SPARQL_ENDPOINT= 
     volumes:
+      - /tmp/hito-all.nt:/tmp/hito-all.nt
+      - ../ontology/license.ttl:/tmp/license.ttl
       - sql:/tmp/sql/
-    # give Virtuoso time to load the RDF files
-    # leads to an error on the server preventing postgresql from starting
-    #command: ./wait-for virtuoso:8890 -- sleep 3 && python download.py
-    command: ["./wait-for","virtuoso:8890","--","python", "download.py"]
+    #command: ["./wait-for","virtuoso:8890","--","python", "download.py"]
+    command: ["python", "download.py"]
 
   postgresql:
     # upgrade to postgresql 14 when available for Arch Linux for local testing
