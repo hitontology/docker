@@ -1,9 +1,5 @@
-FROM alpine/git AS rdf
-WORKDIR /rdf
-RUN git clone https://github.com/hitontology/ontology.git --branch master --single-branch --depth 1 .
-
 FROM tenforce/virtuoso:latest
-COPY --from=rdf /rdf /data/toLoad
+#COPY --from=rdf /rdf /data/toLoad
 ENV DEFAULT_GRAPH=http://hitontology.eu/ontology
 #ENV VIRT_Parameters_DirsAllowed="., /usr/local/virtuoso-opensource/share/virtuoso/vad, /virtuoso/data,/rdf"
 # Deactivate plugins

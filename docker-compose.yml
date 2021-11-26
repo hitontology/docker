@@ -1,15 +1,16 @@
 # HITO - Toolset
-# Autor: Sebastian Stäubert <sebastian.staeubert@imise.uni-leipzig.de>
-# Changes from Konrad Höffner <konrad.hoeffner@imise.uni-leipzig.de>
-
-version: '2'
+# Autors: Sebastian Stäubert <sebastian.staeubert@imise.uni-leipzig.de>, Konrad Höffner <konrad.hoeffner@imise.uni-leipzig.de>
 
 services:
 
+  rdf:
+    build: ./rdf
+    volumes:
+      - rdf:/rdf
+
 # Virtuoso:
 #   Access via http://<hostname>:8080
-#   Access vio iSQL://localhost:1111
-
+#   Access via iSQL://localhost:1111
   virtuoso:
     build: ./virtuoso
     environment:
@@ -19,6 +20,7 @@ services:
       #- VIRT_Parameters_DirsAllowed=., /usr/local/virtuoso-opensource/share/virtuoso/vad, /virtuoso/data
     volumes:
       - virtuoso-data:/data
+      - rdf:/data/toLoad:ro
     #  - /usr/local/virtuoso-opensource/lib
     ports:
       - "127.0.0.1:8102:8890"
@@ -26,7 +28,11 @@ services:
     restart: unless-stopped
     #healthcheck:
     #  test: ["CMD", "curl", "-f", "http://localhost:8890"]
+    depends_on:
+      rdf: 
+        condition: service_completed_successfully
 
+# Access at http://localhost:8104/ontology
   lodview:
     build: ./lodview
     #environment:
@@ -58,15 +64,12 @@ services:
 
   sparqltosql:
     build: ../database
-    environment:
-      - HITO_SPARQL_ENDPOINT=http://virtuoso:8890/sparql
-      - SQL_OUTPUT_BASE_DIR=/tmp/sql/
-    #  - DBPEDIA_SPARQL_ENDPOINT= 
     volumes:
-      - /tmp/hito-all.nt:/tmp/hito-all.nt
-      - ../ontology/license.ttl:/tmp/license.ttl
-      - sql:/tmp/sql/
-    #command: ["./wait-for","virtuoso:8890","--","python", "download.py"]
+      - rdf:/rdf
+      - sql:/sql
+    depends_on:
+      rdf: 
+        condition: service_completed_successfully
     command: ["python", "download.py"]
 
   postgresql:
@@ -146,6 +149,7 @@ services:
 #           gateway: 172.23.13.254
 
 volumes:
+  rdf:
   virtuoso-data:
   postgres-data:
   sql:
