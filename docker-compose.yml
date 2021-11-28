@@ -74,12 +74,12 @@ services:
 
   postgresql:
     # upgrade to postgresql 14 when available for Arch Linux for local testing
-    image: bitnami/postgresql:13
+    image: postgres:13
     restart: unless-stopped
     ports:
       - "127.0.0.1:5432:5432"
     environment:
-      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - sql:/docker-entrypoint-initdb.d
