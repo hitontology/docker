@@ -11,5 +11,6 @@ RUN wget https://github.com/hitontology/ontology/archive/refs/heads/master.zip \
 	&& mv ontology-master/* . \
 	&& ./combine \
 	&& cp license.ttl /rdf \
+	&& cp dbpedia.ttl /rdf \
         && rm ./* -rf
 WORKDIR /rdf
