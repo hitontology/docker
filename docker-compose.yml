@@ -4,9 +4,9 @@
 services:
 
   rdf:
-    build: ./rdf
+    build: ../ontology
     volumes:
-      - rdf:/rdf
+      - rdf:/ontology/dist
 
 # Virtuoso:
 #   Access via http://<hostname>:8080
