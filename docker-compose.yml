@@ -1,5 +1,6 @@
 # HITO - Toolset
-# Autors: Sebastian Stäubert <sebastian.staeubert@imise.uni-leipzig.de>, Konrad Höffner <konrad.hoeffner@imise.uni-leipzig.de>
+# Initial Autor: Sebastian Stäubert <sebastian.staeubert@imise.uni-leipzig.de>
+# Maintainer: Konrad Höffner <konrad.hoeffner@imise.uni-leipzig.de>
 
 services:
 
@@ -130,7 +131,7 @@ services:
     depends_on:
       - postgresql
     ports:
-      - "8112:5000"
+      - "127.0.0.1:8112:5000"
     environment:
       - HITO_DATABASE_HOST=postgresql
       - HITO_DATABASE_PORT=5432
