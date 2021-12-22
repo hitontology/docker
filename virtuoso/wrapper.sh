@@ -12,7 +12,8 @@ then
     pwd="dba"
     graph="http://localhost:8890/DAV"
 
-    if [ "$DBA_PASSWORD" ]; then pwd="$DBA_PASSWORD" ; fi
+    # password seems to not be changed at this time, use perform changes using dba
+    #if [ "$DBA_PASSWORD" ]; then pwd="$DBA_PASSWORD" ; fi
     if [ "$DEFAULT_GRAPH" ]; then graph="$DEFAULT_GRAPH" ; fi
     echo "$(cat setup.sql)"
     virtuoso-t +wait && isql-v -U dba -P "$pwd" < setup.sql

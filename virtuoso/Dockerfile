@@ -5,7 +5,6 @@ ENV DEFAULT_GRAPH=http://hitontology.eu/ontology
 # Deactivate plugins
 # Does not work because of ADD and caching
 #RUN ["sed","-i","s|^Load|;Load|","/usr/local/virtuoso-opensource/var/lib/virtuoso/db/virtuoso.ini"]
-ENV DBA_PASSWORD=dba
 #WORKDIR /usr/local/virtuoso-opensource/var/lib/virtuoso/db
 WORKDIR /virtuoso
 COPY setup.sql .
