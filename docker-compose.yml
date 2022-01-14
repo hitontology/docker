@@ -35,6 +35,8 @@ services:
 
 # Access at http://localhost:8104/ontology
   lodview:
+    # subfolder, uses the master branch of https://github.com/hitontology/lodview
+    # ignore the Dockerfile in the lodview Git repository, it is not used here and may have different settings
     build: ./lodview
     #environment:
       #- LODVIEW_URISPACE=http://hitontology.eu/ontology/
