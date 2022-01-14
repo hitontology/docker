@@ -9,6 +9,7 @@ RUN wget --no-verbose https://github.com/hitontology/lodview/archive/refs/heads/
 RUN mvn -B -q compile war:war
 
 FROM tomcat:9-jre8-slim
+ENV CATALINA_OPTS="-XX:+UseSerialGC"
 COPY --from=builder /app/target/lodview.war /usr/local/tomcat/webapps/ontology.war
 COPY logging.properties /usr/local/tomcat/conf
 EXPOSE 8080
