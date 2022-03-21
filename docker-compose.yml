@@ -1,6 +1,4 @@
-# HITO - Toolset
-# Initial Autor: Sebastian Stäubert <sebastian.staeubert@imise.uni-leipzig.de>
-# Maintainer: Konrad Höffner <konrad.hoeffner@imise.uni-leipzig.de>
+# HITO-Toolset, Maintainer: Konrad Höffner <konrad.hoeffner@imise.uni-leipzig.de>, originally Sebastian Stäubert  <sebastian.staeubert@imise.uni-leipzig.de>
 
 services:
 
@@ -9,26 +7,19 @@ services:
     volumes:
       - rdf:/ontology/dist
 
-# Virtuoso:
-#   Access via http://<hostname>:8080
-#   Access via iSQL://localhost:1111
   virtuoso:
     build: ./virtuoso
     environment:
       - DBA_PASSWORD=${DBA_PASSWORD}
       - SPARQL_UPDATE='false'
       #- DEFAULT_GRAPH=http://hitontology.snik.eu/ontology
-      #- VIRT_Parameters_DirsAllowed=., /usr/local/virtuoso-opensource/share/virtuoso/vad, /virtuoso/data
     volumes:
       - virtuoso-data:/data
       - rdf:/data/toLoad:ro
-    #  - /usr/local/virtuoso-opensource/lib
     ports:
       - "127.0.0.1:8102:8890"
       - "127.0.0.1:8103:1111"
     restart: unless-stopped
-    #healthcheck:
-    #  test: ["CMD", "curl", "-f", "http://localhost:8890"]
     depends_on:
       rdf: 
         condition: service_completed_successfully
@@ -37,33 +28,16 @@ services:
   lodview:
     # subfolder, uses the master branch of https://github.com/hitontology/lodview
     # ignore the Dockerfile in the lodview Git repository, it is not used here and may have different settings
-    build: ./lodview
-    #environment:
-      #- LODVIEW_URISPACE=http://hitontology.eu/ontology/
-      #- LODVIEW_PREFIX=hito
-      #LODVIEW_SPARQLENDPOINT: "http://virtuoso:8890/sparql"
-      # for isolated local testing
-      #- LODVIEW_SPARQLENDPOINT=https://hitontology.eu/sparql
-      #- LODVIEW_HOMEURL=http://hitontology.eu/ontology/SoftwareProduct
-      #- LODVIEW_HOME_TITLE=HITO
-      #- LODVIEW_HOME_ABSTRACT=This is the Abstract 
-      #- LODVIEW_HOME_DESCRIPTION=RDF Browser for HITO
-      #- LODVIEW_PUBLICURLPREFIX=auto
+    build:
+      context: ./lodview
+      args:
+      # server side, so we use the port on the internal port
+        - SPARQL_ENDPOINT=http://virtuoso:8890/sparql
     ports:
       - "127.0.0.1:8104:8080"
     depends_on: 
       - virtuoso
     restart: unless-stopped
-
-## TripleCheckMate
-##   Access via http://<hostname>:8888
-#  triplecheckmate:
-#    build: ./TripleCheckMate
-#    ports:
-#      - "8888:8080"
-#    links:
-#      - virtuoso
-#    restart: unless-stopped
 
   sparqltosql:
     build: ../database
@@ -86,7 +60,6 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - sql:/docker-entrypoint-initdb.d
-      #- /path/to/postgresql-persistence:/bitnami/postgresql
     depends_on:
       sparqltosql:
         condition: service_completed_successfully
@@ -101,32 +74,7 @@ services:
       #- '80:8080'
     depends_on:
       - postgresql
-    #environment:
-    #- PHP_PG_ADMIN_SERVER_DESC=PostgreSQL
-    #- PHP_PG_ADMIN_SERVER_HOST=postgres
-    #- PHP_PG_ADMIN_SERVER_PORT=5432
-    #- PHP_PG_ADMIN_SERVER_SSL_MODE=allow
-    #- PHP_PG_ADMIN_SERVER_DEFAULT_DB=postgres
-    #- PHP_PG_ADMIN_SERVER_PG_DUMP_PATH=/usr/bin/pg_dump
-    #- PHP_PG_ADMIN_SERVER_PG_DUMPALL_PATH=/usr/bin/pg_dumpall
-
-    #- PHP_PG_ADMIN_DEFAULT_LANG=auto
-    #- PHP_PG_ADMIN_AUTO_COMPLETE=default on
-    #- PHP_PG_ADMIN_EXTRA_LOGIN_SECURITY=false
-    #- PHP_PG_ADMIN_OWNED_ONLY=false
-    #- PHP_PG_ADMIN_SHOW_COMMENTS=true
-    #- PHP_PG_ADMIN_SHOW_ADVANCED=false
-    #- PHP_PG_ADMIN_SHOW_SYSTEM=false
-    #- PHP_PG_ADMIN_MIN_PASSWORD_LENGTH=8
-    #- PHP_PG_ADMIN_LEFT_WIDTH=200
-    #- PHP_PG_ADMIN_THEME=default
-    #- PHP_PG_ADMIN_SHOW_OIDS=false
-    #- PHP_PG_ADMIN_MAX_ROWS=30
-    #- PHP_PG_ADMIN_MAX_CHARS=50
-    #- PHP_PG_ADMIN_USE_XHTML_STRICT=false
-    #- PHP_PG_ADMIN_HELP_BASE=http://www.postgresql.org/docs/%s/interactive/
-    #- PHP_PG_ADMIN_AJAX_REFRESH=3
-
+  
   database-frontend:
     restart: unless-stopped
     build: ../database-frontend
@@ -147,4 +95,3 @@ volumes:
   virtuoso-data:
   postgres-data:
   sql:
-
