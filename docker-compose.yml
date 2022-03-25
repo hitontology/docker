@@ -28,11 +28,10 @@ services:
   lodview:
     # subfolder, uses the master branch of https://github.com/hitontology/lodview
     # ignore the Dockerfile in the lodview Git repository, it is not used here and may have different settings
-    build:
-      context: ./lodview
-      args:
-      # server side, so we use the port on the internal port
-        - SPARQL_ENDPOINT=http://virtuoso:8890/sparql
+    build: ./lodview
+    environment:
+    # server side, so we use the port on the internal port
+        - LodViewendpoint=http://virtuoso:8890/sparql
     ports:
       - "127.0.0.1:8104:8080"
     depends_on: 
