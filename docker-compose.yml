@@ -2,11 +2,12 @@
 
 services:
 
-  rdf:
-    build: ../ontology
+  ontology: 
+    build: ./ontology
     volumes:
       - rdf:/ontology/dist
 
+  # Access at http://localhost:8102/sparql
   virtuoso:
     build: ./virtuoso
     environment:
@@ -21,12 +22,12 @@ services:
       - "127.0.0.1:8103:1111"
     restart: unless-stopped
     depends_on:
-      rdf: 
+      ontology: 
         condition: service_completed_successfully
 
-# Access at http://localhost:8104/ontology
+  # Access at http://localhost:8104/ontology
   lodview:
-    build: ../lodview
+    build: ./lodview
     environment:
     # server side, so we use the port on the internal port
         - LodViewendpoint=http://virtuoso:8890/sparql
@@ -37,12 +38,12 @@ services:
     restart: unless-stopped
 
   sparqltosql:
-    build: ../database
+    build: ./database
     volumes:
       - rdf:/rdf
       - sql:/sql
     depends_on:
-      rdf: 
+      ontology: 
         condition: service_completed_successfully
     command: ["python", "download.py"]
     profiles: ["database"]
@@ -76,7 +77,7 @@ services:
   
   database-frontend:
     restart: unless-stopped
-    build: ../database-frontend
+    build: ./database-frontend
     depends_on:
       - postgresql
     ports:

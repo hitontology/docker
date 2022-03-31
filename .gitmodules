@@ -1,0 +1,20 @@
+[submodule "ontology"]
+	path = ontology
+	url = ../ontology
+	ignore = untracked
+	branch = master
+[submodule "lodview"]
+	path = lodview
+	url = ../lodview
+	ignore = untracked
+	branch = master
+[submodule "database"]
+	path = database
+	url = ../database
+	ignore = untracked
+	branch = master
+[submodule "database-frontend"]
+	path = database-frontend
+	url = ../database-frontend
+	ignore = untracked
+	branch = master
