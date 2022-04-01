@@ -2,12 +2,26 @@
 
 services:
 
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+    command:
+     - "--providers.docker=true"
+     - "--api.insecure=true"
+     - "--providers.docker.exposedbydefault=true"
+    ports:
+     - 80:80
+     - 8080:8080
+
   rdf:
     build: ../ontology
     volumes:
       - rdf:/ontology/dist
 
-  virtuoso:
+  sparql:
     build: ./virtuoso
     environment:
       - DBA_PASSWORD=${DBA_PASSWORD}
@@ -18,22 +32,28 @@ services:
       - rdf:/data/toLoad:ro
     ports:
       - "127.0.0.1:8102:8890"
-      - "127.0.0.1:8103:1111"
+      #- "127.0.0.1:8103:1111"
+    labels:
+      - traefik.http.services.sparql.loadbalancer.server.port=8890
+      - traefik.http.routers.sparql.rule=(Host(`localhost`) && Path(`/sparql`))
     restart: unless-stopped
     depends_on:
       rdf: 
         condition: service_completed_successfully
 
 # Access at http://localhost:8104/ontology
-  lodview:
+  ontology:
     build: ../lodview
     environment:
     # server side, so we use the port on the internal port
         - LodViewendpoint=http://virtuoso:8890/sparql
     ports:
       - "127.0.0.1:8104:8080"
+    labels:
+      - traefik.http.services.ontology.loadbalancer.server.port=8080
+      - traefik.http.routers.ontology.rule=(Host(`localhost`) && Path(`/ontology`))
     depends_on: 
-      - virtuoso
+      - sparql 
     restart: unless-stopped
 
   sparqltosql:
@@ -69,6 +89,9 @@ services:
       - "127.0.0.1:8111:8080"
       #- "443:443"
       #- '80:8080'
+    labels:
+      - traefik.http.services.phppgadmin.loadbalancer.server.port=8080
+      - traefik.http.routers.phppgadmin.rule=(Host(`localhost`) && Path(`/phppgadmin`))
     depends_on:
       - postgresql
   
