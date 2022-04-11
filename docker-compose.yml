@@ -47,8 +47,7 @@ services:
     command: ["python", "download.py"]
 
   postgresql:
-    # upgrade to postgresql 14 when available for Arch Linux for local testing
-    image: postgres:13
+    image: postgres:14
     restart: unless-stopped
     ports:
       - "127.0.0.1:55432:5432"
