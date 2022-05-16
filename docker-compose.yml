@@ -45,6 +45,7 @@ services:
       rdf: 
         condition: service_completed_successfully
     command: ["python", "download.py"]
+    profiles: ["database"]
 
   postgresql:
     image: postgres:14
@@ -59,6 +60,7 @@ services:
     depends_on:
       sparqltosql:
         condition: service_completed_successfully
+    profiles: ["database"]
 
   phppgadmin:
     #restart: unless-stopped
@@ -70,6 +72,7 @@ services:
       #- '80:8080'
     depends_on:
       - postgresql
+    profiles: ["database"]
   
   database-frontend:
     restart: unless-stopped
@@ -85,6 +88,7 @@ services:
       - HITO_DATABASE_NAME=postgres
       - HITO_DATABASE_FRONTEND_REVERSE_PROXY_PATH=/database-frontend
       #- HITO_DATABASE_FRONTEND_SERVER_NAME=bruchtal.imise.uni-leipzig.de/database-frontend
+    profiles: ["database"]
 
 volumes:
   rdf:
