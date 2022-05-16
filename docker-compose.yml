@@ -29,7 +29,7 @@ services:
   lodview:
     build: ./lodview
     environment:
-    # server side, so we use the port on the internal port
+    # server side, so we use the internal port
         - LodViewendpoint=http://virtuoso:8890/sparql
     ports:
       - "127.0.0.1:8104:8080"
@@ -64,13 +64,9 @@ services:
     profiles: ["database"]
 
   phppgadmin:
-    #restart: unless-stopped
-    #image: dockage/phppgadmin:latest
     image: bitnami/phppgadmin:latest
     ports:
       - "127.0.0.1:8111:8080"
-      #- "443:443"
-      #- '80:8080'
     depends_on:
       - postgresql
     profiles: ["database"]
@@ -88,7 +84,6 @@ services:
       - HITO_DATABASE_PASSWORD=${POSTGRESQL_PASSWORD}
       - HITO_DATABASE_NAME=postgres
       - HITO_DATABASE_FRONTEND_REVERSE_PROXY_PATH=/database-frontend
-      #- HITO_DATABASE_FRONTEND_SERVER_NAME=bruchtal.imise.uni-leipzig.de/database-frontend
     profiles: ["database"]
 
 volumes:
