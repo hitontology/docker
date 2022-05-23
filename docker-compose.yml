@@ -86,6 +86,14 @@ services:
       - HITO_DATABASE_FRONTEND_REVERSE_PROXY_PATH=/database-frontend
     profiles: ["database"]
 
+  proxy:
+    image: caddy:2-alpine
+    profiles: ["proxy"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - "127.0.0.1:80:80"
+
 volumes:
   rdf:
   virtuoso-data:
