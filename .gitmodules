@@ -3,9 +3,9 @@
 	url = ../ontology
 	ignore = untracked
 	branch = master
-[submodule "lodview"]
-	path = lodview
-	url = ../lodview
+[submodule "rickview"]
+	path = rickview
+	url = git@github.com:konradhoeffner/rickview
 	ignore = untracked
 	branch = master
 [submodule "database"]

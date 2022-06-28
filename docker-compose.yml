@@ -26,15 +26,22 @@ services:
         condition: service_completed_successfully
 
   # Access at http://localhost:8104/ontology
-  lodview:
-    build: ./lodview
+  rickview:
+    build: ./rickview
     environment:
-    # server side, so we use the internal port
-        - LodViewendpoint=http://virtuoso:8890/sparql
+      - RICKVIEW_KB_FILE=/rdf/hito.ttl
+      - RICKVIEW_BASE_PATH=/ontology
+      - RICKVIEW_TITLE=HITO
+      - RICKVIEW_SUBTITLE=Health IT Ontology
+      - RICKVIEW_EXAMPLES=Study SoftwareProduct ApplicationSystemTypeCatalogue
+      - RICKVIEW_HOMEPAGE=https://hitontology.eu
+      - RICKVIEW_ENDPOINT=https://hitontology.eu/sparql
+      - RICKVIEW_GITHUB=https://github.com/hitontology/ontology
+      - RICKVIEW_DOC=https://hitontology.github.io/ontology/index-en.html
+    volumes:
+      - rdf:/rdf
     ports:
       - "127.0.0.1:8104:8080"
-    depends_on: 
-      - virtuoso
     restart: unless-stopped
 
   sparqltosql:
