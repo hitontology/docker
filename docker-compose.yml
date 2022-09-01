@@ -30,9 +30,11 @@ services:
     build: ./rickview
     environment:
       - RICKVIEW_KB_FILE=/rdf/hito.ttl
-      - RICKVIEW_BASE_PATH=/ontology
+      - RICKVIEW_BASE=/ontology
       - RICKVIEW_TITLE=HITO
       - RICKVIEW_SUBTITLE=Health IT Ontology
+      - RICKVIEW_PREFIX=hito
+      - RICKVIEW_NAMESPACE=http://hitontology.eu/ontology/
       - RICKVIEW_EXAMPLES=Study SoftwareProduct ApplicationSystemTypeCatalogue
       - RICKVIEW_HOMEPAGE=https://hitontology.eu
       - RICKVIEW_ENDPOINT=https://hitontology.eu/sparql
