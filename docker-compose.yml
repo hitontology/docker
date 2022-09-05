@@ -27,7 +27,7 @@ services:
 
   # Access at http://localhost:8104/ontology
   rickview:
-    build: ./rickview
+    image: ghcr.io/konradhoeffner/rickview:master
     environment:
       - RICKVIEW_KB_FILE=/rdf/hito.ttl
       - RICKVIEW_BASE=/ontology
