@@ -5,25 +5,31 @@ services:
   ontology: 
     build: ./ontology
     volumes:
-      - rdf:/ontology/dist
+      - rdf:/ontology/dist:ro
 
   # Access at http://localhost:8102/sparql
   virtuoso:
-    build: ./virtuoso
+    image: openlink/virtuoso-opensource-7
     environment:
       - DBA_PASSWORD=${DBA_PASSWORD}
-      - SPARQL_UPDATE='false'
-      #- DEFAULT_GRAPH=http://hitontology.snik.eu/ontology
+      - VIRT_DATABASE_ERRORLOGLEVEL=3
+      - VIRT_PARAMETERS_NUMBEROFBUFFERS=10000
+      - VIRT_PARAMETERS_MAXDIRTYBUFFERS=6000
+      - VIRT_HTTPSERVER_SERVERPORT=8890
+      - VIRT_SPARQL_DEFAULTGRAPH=http://hitontology.eu/ontology
+      - VIRT_SPARQL_RESULTSETMAXROWS=50000
+      - VIRT_SPARQL_MAXQUERYCOSTESTIMATIONTIME=400
+      - VIRT_SPARQL_MAXQUERYEXECUTIONTIME=120
+      - VIRT_SPARQL_DEFAULTQUERY=select distinct * {?s a hito:SoftwareProduct.} LIMIT 100
+      - VIRT_PARAMETERS_DIRSALLOWED=., /usr/local/virtuoso-opensource/share/virtuoso/vad, /rdf
+      - VIRT_PLUGINS_-=-
     volumes:
-      - virtuoso-data:/data
-      - rdf:/data/toLoad:ro
+      - rdf:/rdf:ro
+      - ./virtuoso:/opt/virtuoso-opensource/initdb.d:ro
     ports:
       - "127.0.0.1:8102:8890"
       - "127.0.0.1:8103:1111"
     restart: unless-stopped
-    depends_on:
-      ontology: 
-        condition: service_completed_successfully
 
   # Access at http://localhost:8104/ontology
   rickview:
@@ -41,7 +47,7 @@ services:
       - RICKVIEW_GITHUB=https://github.com/hitontology/ontology
       - RICKVIEW_DOC=https://hitontology.github.io/ontology/index-en.html
     volumes:
-      - rdf:/rdf
+      - rdf:/rdf:ro
     ports:
       - "127.0.0.1:8104:8080"
     restart: unless-stopped
@@ -49,7 +55,7 @@ services:
   sparqltosql:
     build: ./database
     volumes:
-      - rdf:/rdf
+      - rdf:/rdf:ro
       - sql:/sql
     depends_on:
       ontology: 
@@ -105,6 +111,5 @@ services:
 
 volumes:
   rdf:
-  virtuoso-data:
   postgres-data:
   sql:
