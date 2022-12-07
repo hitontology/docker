@@ -33,7 +33,7 @@ services:
 
   # Access at http://localhost:8104/ontology
   rickview:
-    image: ghcr.io/konradhoeffner/rickview:0.0.4
+    image: ghcr.io/konradhoeffner/rickview:0.0.6
     environment:
       - RICKVIEW_KB_FILE=/rdf/hito.ttl
       - RICKVIEW_BASE=/ontology
