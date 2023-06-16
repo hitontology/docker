@@ -50,6 +50,8 @@ services:
       - rdf:/rdf:ro
     ports:
       - "127.0.0.1:8104:8080"
+    depends_on:
+      - ontology
     restart: unless-stopped
 
   sparqltosql:
