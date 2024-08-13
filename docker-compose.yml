@@ -9,7 +9,7 @@ services:
 
   # Access at http://localhost:8102/sparql
   virtuoso:
-    image: openlink/virtuoso-opensource-7
+    image: pkleef/virtuoso-opensource-7
     environment:
       - DBA_PASSWORD=${DBA_PASSWORD}
       - VIRT_DATABASE_ERRORLOGLEVEL=3
@@ -22,6 +22,7 @@ services:
       - VIRT_SPARQL_MAXQUERYEXECUTIONTIME=120
       - VIRT_SPARQL_DEFAULTQUERY=select distinct * {?s a hito:SoftwareProduct.} LIMIT 100
       - VIRT_PARAMETERS_DIRSALLOWED=., /usr/local/virtuoso-opensource/share/virtuoso/vad, /rdf
+      - VIRT_HTTPSERVER_ENABLEDGZIPCONTENT=1
       - VIRT_PLUGINS_-=-
     volumes:
       - rdf:/rdf:ro
