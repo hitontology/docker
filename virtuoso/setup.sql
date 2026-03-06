@@ -18,8 +18,15 @@ DB.DBA.XML_SET_NS_DECL('dce', 'http://purl.org/dc/elements/1.1/', 2);
 DB.DBA.XML_SET_NS_DECL('vann', 'http://purl.org/vocab/vann/', 2);
 DB.DBA.XML_SET_NS_DECL('schema', 'http://schema.org/', 2);
 DB.DBA.XML_SET_NS_DECL('foaf', 'http://xmlns.com/foaf/0.1/', 2);
+DB.DBA.XML_SET_NS_DECL('owl', 'http://www.w3.org/2002/07/owl#', 2);
+DB.DBA.XML_SET_NS_DECL('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 2);
+DB.DBA.XML_SET_NS_DECL('xml', 'http://www.w3.org/XML/1998/namespace', 2);
+DB.DBA.XML_SET_NS_DECL('xsd', 'http://www.w3.org/2001/XMLSchema#', 2);
+DB.DBA.XML_SET_NS_DECL('rdfs', 'http://www.w3.org/2000/01/rdf-schema#', 2);
+DB.DBA.XML_SET_NS_DECL('sh', 'http://www.w3.org/ns/shacl#', 2);
+
 log_message('Setup: Load data from .ttl files');
--- x.ttl.graph file will override graph parameter for file x.ttl, see https://github.com/openlink/virtuoso-opensource/issues/1075
-ld_dir_all ('/rdf/', '*.ttl', 'http://hitontology.eu/ontology');
+ld_dir_all ('data', '*.ttl', 'http://hitontology.eu/ontology');
 rdf_loader_run();
+http_enable_gz(1);
 log_message('Setup: Finished');

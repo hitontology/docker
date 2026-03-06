@@ -2,11 +2,6 @@
 
 services:
 
-  ontology: 
-    build: ./ontology
-    volumes:
-      - rdf:/ontology/dist:ro
-
   # Access at http://localhost:8102/sparql
   virtuoso:
     image: pkleef/virtuoso-opensource-7
@@ -21,11 +16,12 @@ services:
       - VIRT_SPARQL_MAXQUERYCOSTESTIMATIONTIME=400
       - VIRT_SPARQL_MAXQUERYEXECUTIONTIME=120
       - VIRT_SPARQL_DEFAULTQUERY=select distinct * {?s a hito:SoftwareProduct.} LIMIT 100
-      - VIRT_PARAMETERS_DIRSALLOWED=., /usr/local/virtuoso-opensource/share/virtuoso/vad, /rdf
+      - VIRT_PARAMETERS_DIRSALLOWED=., /usr/local/virtuoso-opensource/share/virtuoso/vad
       - VIRT_HTTPSERVER_ENABLEDGZIPCONTENT=1
       - VIRT_PLUGINS_-=-
     volumes:
-      - rdf:/rdf:ro
+      # Virtuoso loads each ttl file from the local ontology directory root including SHACL shapes into the HITO graph.
+      - ./ontology:/database/data
       - ./virtuoso:/opt/virtuoso-opensource/initdb.d:ro
     ports:
       - "127.0.0.1:8102:8890"
@@ -34,7 +30,11 @@ services:
 
   # Access at http://localhost:8104/ontology
   rickview:
-    image: ghcr.io/konradhoeffner/rickview:master
+    build:
+      context: .
+      additional_contexts:
+        - ontology=./ontology
+      dockerfile: Dockerfile.rickview
     environment:
       - RICKVIEW_KB_FILE=/rdf/hito.ttl
       - RICKVIEW_BASE=/ontology
@@ -46,19 +46,18 @@ services:
       - RICKVIEW_HOMEPAGE=https://hitontology.eu
       - RICKVIEW_ENDPOINT=https://hitontology.eu/sparql
       - RICKVIEW_GITHUB=https://github.com/hitontology/ontology
-      - RICKVIEW_DOC=https://hitontology.github.io/ontology/index-en.html
-    volumes:
-      - rdf:/rdf:ro
+      - RICKVIEW_DOC=https://hitontology.github.io/ontology/
     ports:
       - "127.0.0.1:8104:8080"
-    depends_on:
-      - ontology
     restart: unless-stopped
 
+  # the following database services were used in the initial setup of the project and are kept only for historical purposes
+  # they will probably never be activated again but may be used as a blueprint for similar projects in the future
   sparqltosql:
     build: ./database
     volumes:
-      - rdf:/rdf:ro
+      # we don't create a volume anymore, so if we were to ever use the SPARQL to SQL conversion again we would have to refactor this
+      #- rdf:/rdf:ro
       - sql:/sql
     depends_on:
       ontology: 
@@ -104,6 +103,9 @@ services:
       - HITO_DATABASE_FRONTEND_REVERSE_PROXY_PATH=/database-frontend
     profiles: ["database"]
 
+  # activate the proxy profile for local development so you don't have to type in port numbers:
+  # http://localhost/sparql
+  # http://localhost/ontology
   proxy:
     image: caddy:2-alpine
     profiles: ["proxy"]
@@ -113,6 +115,5 @@ services:
       - "127.0.0.1:80:80"
 
 volumes:
-  rdf:
   postgres-data:
   sql:
