@@ -30,13 +30,9 @@ services:
 
   # Access at http://localhost:8104/ontology
   rickview:
-    build:
-      context: .
-      additional_contexts:
-        - ontology=./ontology
-      dockerfile: Dockerfile.rickview
+    image: ghcr.io/konradhoeffner/rickview:master
     environment:
-      - RICKVIEW_KB_FILE=/rdf/hito.ttl
+      - RICKVIEW_KB_FILE=/ontology/
       - RICKVIEW_BASE=/ontology
       - RICKVIEW_TITLE=HITO
       - RICKVIEW_SUBTITLE=Health IT Ontology
@@ -50,13 +46,15 @@ services:
     ports:
       - "127.0.0.1:8104:8080"
     restart: unless-stopped
+    volumes:
+      - ./ontology:/ontology/
 
   # the following database services were used in the initial setup of the project and are kept only for historical purposes
   # they will probably never be activated again but may be used as a blueprint for similar projects in the future
   sparqltosql:
     build: ./database
     volumes:
-      # we don't create a volume anymore, so if we were to ever use the SPARQL to SQL conversion again we would have to refactor this
+      - ./ontology/:/ontology/
       #- rdf:/rdf:ro
       - sql:/sql
     depends_on:
