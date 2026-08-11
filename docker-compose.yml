@@ -64,7 +64,7 @@ services:
     profiles: ["database"]
 
   postgresql:
-    image: postgres:14
+    image: postgres:18
     restart: unless-stopped
     ports:
       - "127.0.0.1:55432:5432"
