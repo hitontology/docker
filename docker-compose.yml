@@ -16,7 +16,7 @@ services:
       - VIRT_SPARQL_MAXQUERYCOSTESTIMATIONTIME=400
       - VIRT_SPARQL_MAXQUERYEXECUTIONTIME=120
       - VIRT_SPARQL_DEFAULTQUERY=select distinct * {?s a hito:SoftwareProduct.} LIMIT 100
-      - VIRT_PARAMETERS_DIRSALLOWED=., /usr/local/virtuoso-opensource/share/virtuoso/vad
+      #- VIRT_PARAMETERS_DIRSALLOWED=., /opt/virtuoso-opensource/vad
       - VIRT_HTTPSERVER_ENABLEDGZIPCONTENT=1
       - VIRT_PLUGINS_-=-
     volumes:
